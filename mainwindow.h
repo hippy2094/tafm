@@ -6,6 +6,7 @@
 #include <QScrollBar>
 #include <QMessageBox>
 #include <QDebug>
+#include <QFile>
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +20,8 @@ struct TSelectedFile {
     QString AbsoluteFileName;
 };
 
+static const struct TSelectedFile EmptyFile;
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
@@ -27,13 +30,15 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_btnInfo_clicked();
-
     void on_treeView_clicked(const QModelIndex &index);
-
+    void on_btnInfo_clicked();
     void on_btnBack_clicked();
-
     void on_btnForward_clicked();
+    void on_btnCut_clicked();
+    void on_btnCopy_clicked();
+    void on_btnPaste_clicked();
+    void on_btnDelete_clicked();
+    void on_btnRename_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -42,6 +47,7 @@ private:
     int HistoryIndex;
     TCurrentMode FileMode;
     TSelectedFile CurrentFile;
+    TSelectedFile SourceFile;
 
 };
 

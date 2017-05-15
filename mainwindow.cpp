@@ -41,21 +41,21 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::on_btnInfo_clicked() {
-    QString html;
-    html = "<p><b style=\"font-size: 14pt\">tafm</b> 0.1<br>\n";
-    html.append("&copy;2017 <a href=\"http://www.matthewhipkin.co.uk\" style=\"color: #FF0000\">Matthew Hipkin</a><br>\n");   
-    html.append("<p>A tiny file manager</p>");
-    //html.append("<p>Follow me on twitter <a href=\"https://twitter.com/hippy2094\" style=\"color: #FF0000\">@hippy2094</a></p>");
-    QMessageBox::about(this,"About tafm",html);
-}
-
 void MainWindow::on_treeView_clicked(const QModelIndex &index) {
     HistoryList << index;
     HistoryIndex = HistoryList.indexOf(index);
     CurrentFile.FileName = index.data(Qt::DisplayRole).toString();
     CurrentFile.Path = QFileInfo(model->filePath(index)).absolutePath();
     CurrentFile.AbsoluteFileName = model->filePath(index);
+}
+
+void MainWindow::on_btnInfo_clicked() {
+    QString html;
+    html = "<p><b style=\"font-size: 14pt\">tafm</b> 0.1<br>\n";
+    html.append("&copy;2017 <a href=\"http://www.matthewhipkin.co.uk\" style=\"color: #FF0000\">Matthew Hipkin</a><br>\n");
+    html.append("<p>A tiny file manager</p>");
+    //html.append("<p>Follow me on twitter <a href=\"https://twitter.com/hippy2094\" style=\"color: #FF0000\">@hippy2094</a></p>");
+    QMessageBox::about(this,"About tafm",html);
 }
 
 void MainWindow::on_btnBack_clicked() {
@@ -74,4 +74,38 @@ void MainWindow::on_btnForward_clicked() {
     ui->treeView->expand(LastIndex);
     ui->treeView->scrollTo(LastIndex);
     ui->treeView->setCurrentIndex(LastIndex);
+}
+
+void MainWindow::on_btnCut_clicked() {
+    FileMode = mCutting;
+    SourceFile = CurrentFile;
+}
+
+void MainWindow::on_btnCopy_clicked() {
+    FileMode = mCopying;
+    SourceFile = CurrentFile;
+}
+
+void MainWindow::on_btnPaste_clicked() {
+    //QFile::copy();
+    QString t;
+    if(FileMode == mCutting) t = "Are you sure you want to move this file?";
+    else t = "Are you sure you want to copy this file?";
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Confirm", t, QMessageBox::Yes|QMessageBox::No);
+    if (reply == QMessageBox::Yes) {
+
+    }
+    else {
+        FileMode = mNone;
+        SourceFile = EmptyFile;
+    }
+}
+
+void MainWindow::on_btnDelete_clicked() {
+    //QFile::remove();
+}
+
+void MainWindow::on_btnRename_clicked() {
+    //QFile::rename();
 }
