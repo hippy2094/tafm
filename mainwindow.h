@@ -12,12 +12,13 @@ namespace Ui {
 class MainWindow;
 }
 
-enum TCurrentMode { mNone, mCutting, mCopying };
+enum TCurrentMode { mNone, mCut, mCopy };
 
 struct TSelectedFile {
     QString FileName;
     QString Path;
     QString AbsoluteFileName;
+    bool IsDirectory = false;
 };
 
 static const struct TSelectedFile EmptyFile;
@@ -39,6 +40,7 @@ private slots:
     void on_btnPaste_clicked();
     void on_btnDelete_clicked();
     void on_btnRename_clicked();
+    void on_treeView_doubleClicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;

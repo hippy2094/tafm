@@ -19,7 +19,6 @@
      <widget class="QTreeView" name="treeView">
       <property name="styleSheet">
        <string notr="true">QTreeView {
-    background: #e8f4fc;
     font-size: 18pt;
 }</string>
       </property>

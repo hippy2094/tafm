@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->treeView->setColumnHidden(3,true);
     ui->treeView->header()->hide();
 
-    ui->treeView->verticalScrollBar()->setStyleSheet(
+    /*ui->treeView->verticalScrollBar()->setStyleSheet(
         "background-color: #EAF5FF;"
         "alternate-background-color: #D5EAFF;"
         "border: 1px solid #000000"
@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
                 "background-color: #EAF5FF;"
                 "alternate-background-color: #D5EAFF;"
                 "border: 1px solid #000000"
-            );
+            );*/
 
 }
 
@@ -47,6 +47,7 @@ void MainWindow::on_treeView_clicked(const QModelIndex &index) {
     CurrentFile.FileName = index.data(Qt::DisplayRole).toString();
     CurrentFile.Path = QFileInfo(model->filePath(index)).absolutePath();
     CurrentFile.AbsoluteFileName = model->filePath(index);
+    CurrentFile.IsDirectory = QFileInfo(model->filePath(index)).isDir();
 }
 
 void MainWindow::on_btnInfo_clicked() {
@@ -77,24 +78,36 @@ void MainWindow::on_btnForward_clicked() {
 }
 
 void MainWindow::on_btnCut_clicked() {
-    FileMode = mCutting;
+    FileMode = mCut;
     SourceFile = CurrentFile;
 }
 
 void MainWindow::on_btnCopy_clicked() {
-    FileMode = mCopying;
+    FileMode = mCopy;
     SourceFile = CurrentFile;
 }
 
 void MainWindow::on_btnPaste_clicked() {
     //QFile::copy();
     QString t;
-    if(FileMode == mCutting) t = "Are you sure you want to move this file?";
+    if(FileMode == mCut) t = "Are you sure you want to move this file?";
     else t = "Are you sure you want to copy this file?";
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Confirm", t, QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-
+        QString DestFile;
+        if(FileMode == mCopy) {
+            if(CurrentFile.IsDirectory) {
+                DestFile = CurrentFile.AbsoluteFileName + "/" + SourceFile.FileName;
+            }
+            else {
+                DestFile = CurrentFile.AbsoluteFileName;
+            }
+            qDebug() << "Copying " << SourceFile.AbsoluteFileName << " to " << DestFile;
+        }
+        else {
+            qDebug() << "Moving " << SourceFile.AbsoluteFileName << " to " << CurrentFile.Path;
+        }
     }
     else {
         FileMode = mNone;
@@ -108,4 +121,8 @@ void MainWindow::on_btnDelete_clicked() {
 
 void MainWindow::on_btnRename_clicked() {
     //QFile::rename();
+}
+
+void MainWindow::on_treeView_doubleClicked(const QModelIndex &index) {
+
 }
